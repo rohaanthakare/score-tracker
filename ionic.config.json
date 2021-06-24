@@ -1,0 +1,7 @@
+{
+  "name": "score-tracker",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

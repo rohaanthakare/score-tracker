@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "score-tracker",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
