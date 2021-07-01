@@ -1,0 +1,26 @@
+<div class="ion-padding tracker-scroll dashboard-class" style="background-color: #1C2541;">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" *ngFor="let game of gameList">
+        <ion-card class="widget-card" (click)="widgetClicked(game)">
+          <ion-card-header style="padding: 0px;">
+            <table class="widget-class">
+              <tr>
+                <td>
+                  <img src="../../assets/icon/{{game.iconImageName}}">
+                </td>
+                <td>
+                  <ion-card-title style="font-size: 15pt;">
+                    <ion-text color="primary">
+                      {{game.name}}
+                    </ion-text>
+                  </ion-card-title>
+                </td>
+              </tr>
+            </table>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>

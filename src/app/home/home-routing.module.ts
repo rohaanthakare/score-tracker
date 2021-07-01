@@ -9,6 +9,12 @@ const routes: Routes = [
     children: [{
       path: '',
       loadChildren: () => import('../dashboard/dashboard.module').then( m => m.DashboardModule)
+    }, {
+      path: 'cards',
+      loadChildren: () => import('../playing-cards/playing-cards.module').then( m => m.PlayingCardsModule)
+    }, {
+      path: 'sports',
+      loadChildren: () => import('../sports/sports.module').then( m => m.SportsModule)
     }]
   }
 ];

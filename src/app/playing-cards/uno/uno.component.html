@@ -1,0 +1,37 @@
+<form [formGroup]="gameForm">
+  <ion-list>
+    <ion-list-header class="list-header-custom">
+      <ion-label color="primary">UNO</ion-label>
+    </ion-list-header>
+    <ng-container *ngIf="!isNumberOfPlayersAdded">
+      <ion-item>
+        <ion-label position="floating">Number of Players</ion-label>
+        <ion-input type="number" formControlName="numberOfPlayers"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-button expand="block" (click)="addPlayerDetails(gameForm)">Add Player Details</ion-button>
+      </ion-item>
+    </ng-container>
+    <ng-container *ngIf="isNumberOfPlayersAdded && !isShowScoreboard">
+      <ion-item *ngFor="let player of playerDetails">
+        <ion-label position="floating">Player {{player.id + 1}} Name</ion-label>
+        <ion-input type="text" [formControlName]="player.nameCtrl"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-button expand="block" (click)="startGame(gameForm)">Start Game</ion-button>
+      </ion-item>
+    </ng-container>
+    <ng-container *ngIf="isShowScoreboard">
+      <ion-item *ngFor="let player of playerDetails">
+        <ion-label position="start">{{player.name}}</ion-label>
+        <ion-label position="end">{{player.score}}</ion-label>
+      </ion-item>
+      <ion-item *ngIf="!gameCompleted">
+        <ion-button expand="block" (click)="finishRound()">Next Round</ion-button>
+      </ion-item>
+      <ion-item *ngIf="gameCompleted">
+        <ion-button expand="block" (click)="endGame()">End Game</ion-button>
+      </ion-item>
+    </ng-container>
+  </ion-list>  
+</form>
