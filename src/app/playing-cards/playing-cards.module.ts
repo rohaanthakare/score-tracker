@@ -11,7 +11,7 @@ const routes: Routes = [{
   path: '',
   component: GameListComponent
 }, {
-  path: 'uno',
+  path: ':code',
   component: UnoComponent
 }];
 
@@ -22,3 +22,10 @@ const routes: Routes = [{
   ]
 })
 export class PlayingCardsModule { }
+
+
+export enum CardGames {
+  UNO = 'uno',
+  HIGH_SCORE_WINNER = 'high_score_winner',
+  LOW_SCORE_WINNER = 'low_score_winner'
+}

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { CardGames } from '../playing-cards.module';
 
 @Component({
   selector: 'app-game-list',
@@ -9,17 +10,17 @@ import { Router } from '@angular/router';
 export class GameListComponent implements OnInit {
   gameList = [{
     name: 'UNO',
-    code:'uno',
+    code: CardGames.UNO,
     iconImageName: 'uno_white.png',
     pathUrl: ''
   }, {
     name: 'High Score Winner',
-    code:'high_score_winner',
+    code:CardGames.HIGH_SCORE_WINNER,
     iconImageName: 'cards_white.png',
     pathUrl: ''
   }, {
     name: 'Low Score Winner',
-    code:'low_score_winner',
+    code:CardGames.LOW_SCORE_WINNER,
     iconImageName: 'cards_white.png',
     pathUrl: ''
   }];
@@ -28,8 +29,6 @@ export class GameListComponent implements OnInit {
   ngOnInit() {}
 
   widgetClicked(game) {
-    console.log('Game Clicked');
-    console.log(game);
     this.router.navigate([`home/cards/${game.code}`]);
   }
 

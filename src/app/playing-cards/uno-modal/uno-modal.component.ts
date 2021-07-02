@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
+import { CardGames } from '../playing-cards.module';
 
 @Component({
   selector: 'app-uno-modal',
@@ -10,21 +11,46 @@ import { ModalController } from '@ionic/angular';
 export class UnoModalComponent implements OnInit {
   @Input() playerDetails: any;
   @Input() roundNumber: number;
+  @Input() gameCode: CardGames;
   roundResult: any;
-  roundForm: FormGroup = this.formBuilder.group({
-    winnerDetail: new FormControl(),
-    winnerScore: new FormControl()
-  });
+  isUno = false;
+  roundForm: FormGroup;
   constructor(private formBuilder: FormBuilder, private modalCtrl: ModalController) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.isUno = this.gameCode === CardGames.UNO ? true : false;
+    if (this.isUno) {
+      this.roundForm = this.formBuilder.group({
+      });
+      this.roundForm.addControl('winnerDetail', new FormControl());
+      this.roundForm.addControl('winnerScore', new FormControl());
+    } else {
+      this.roundForm = this.formBuilder.group({
+      });
+
+      this.playerDetails.forEach((p) => {
+        this.roundForm.addControl('playerScore' + p.id, new FormControl());
+        p['scoreCtrlName'] = 'playerScore' + p.id;
+      });
+    }
+  }
 
   dismissModal() {
     this.modalCtrl.dismiss(this.roundResult);
   }
 
   finishRound() {
-    this.roundResult = this.roundForm.value;
+    if (this.isUno) {
+      this.roundResult = this.roundForm.value;
+    } else {
+      this.roundResult = [];
+      this.playerDetails.forEach((p) => {
+         this.roundResult.push({
+          id: p.id,
+          playerScore: this.roundForm.value['playerScore' + p.id]
+        });
+      });
+    }
     this.dismissModal();
   }
 }

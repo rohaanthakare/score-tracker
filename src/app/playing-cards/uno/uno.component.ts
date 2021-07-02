@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
 import { HelperService, SortDirection } from 'src/app/helper.service';
+import { CardGames } from '../playing-cards.module';
 import { UnoModalComponent } from '../uno-modal/uno-modal.component';
 
 export class PlayerDetail {
@@ -17,6 +18,7 @@ export class PlayerDetail {
   styleUrls: ['./uno.component.scss'],
 })
 export class UnoComponent implements OnInit {
+  gameCode: string;
   isNumberOfPlayersAdded = false;
   isShowScoreboard = false;
   roundNumber = 1;
@@ -25,12 +27,20 @@ export class UnoComponent implements OnInit {
   gameForm: FormGroup = this.formBuilder.group({
     numberOfPlayers: this.numberOfPlayersCtrl
   });
-  winnerName = ''; 
+  winnerName = '';
+  isUno = false; 
   playerDetails = [];
   constructor(private formBuilder: FormBuilder, private modalCtrl: ModalController, private alertCtrl: AlertController,
-    private helperService: HelperService, private router: Router) { }
+    private helperService: HelperService, private router: Router, private route: ActivatedRoute) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.route.paramMap.subscribe(
+      params => {
+        this.gameCode = params.get('code');
+        this.isUno = this.gameCode === CardGames.UNO ? true : false;
+      }
+    );
+  }
 
   addPlayerDetails() {
     this.isNumberOfPlayersAdded = true;
@@ -66,24 +76,41 @@ export class UnoComponent implements OnInit {
       component: UnoModalComponent,
       componentProps: {
         playerDetails: this.playerDetails,
-        roundNumber: this.roundNumber
+        roundNumber: this.roundNumber,
+        gameCode: this.gameCode
       }
     });
 
     roundModal.onDidDismiss().then((data: any) => {
-      this.playerDetails.forEach((p) => {
-        if (p.id === data.data.winnerDetail.id) {
-          p.score = p.score + data.data.winnerScore;
-          if (p.score >= 500) {
-            this.gameCompleted = true;
-            this.winnerName = p.name;
-            this.isGameCompleted();
-          }          
+      if (this.isUno) {
+        this.playerDetails.forEach((p) => {
+            if (data.data && data.data.winnerDetail != null) {
+              if (p.id === data.data.winnerDetail.id) {
+                p.score = p.score + data.data.winnerScore;
+                if (p.score >= 500) {
+                  this.gameCompleted = true;
+                  this.winnerName = p.name;
+                  this.isGameCompleted();
+                }          
+              }
+            }
+          
+        });
+        this.roundNumber++;
+      } else {
+        if (data.data) {
+          data.data.forEach((d) => {
+            const playerDetail = this.playerDetails.find((p) => p.id == d.id);
+            playerDetail.score = playerDetail.score + d.playerScore; 
+          });
+          this.roundNumber++;
         }
-      });
-
-      this.helperService.sortArray(this.playerDetails, 'score', SortDirection.DESC);
-      this.roundNumber++;
+      }
+      if (this.gameCode === CardGames.LOW_SCORE_WINNER) {
+        this.helperService.sortArray(this.playerDetails, 'score', SortDirection.ASC);
+      } else {
+        this.helperService.sortArray(this.playerDetails, 'score', SortDirection.DESC);
+      }
     });
 
     await roundModal.present();
@@ -94,7 +121,7 @@ export class UnoComponent implements OnInit {
       const alertModal = await this.alertCtrl.create({
         header: 'WINNER !!!!',
         subHeader: this.winnerName,
-        message: 'Won this game of UNO.',
+        message: 'Won this game.',
         buttons: ['OK']
       });
 
@@ -102,7 +129,18 @@ export class UnoComponent implements OnInit {
     }
   }
 
-  endGame() {
+  async endGame() {
+    if (!this.isUno) {
+      this.winnerName = this.playerDetails[0].name;
+      const alertModal = await this.alertCtrl.create({
+        header: 'WINNER !!!!',
+        subHeader: this.winnerName,
+        message: 'Won this game.',
+        buttons: ['OK']
+      });
+
+      await alertModal.present();
+    }
     this.router.navigate(['/home']);
   }
 }

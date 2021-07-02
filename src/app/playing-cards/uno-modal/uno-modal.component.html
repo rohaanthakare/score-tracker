@@ -12,23 +12,35 @@
       <ion-list-header class="list-header-custom">
         <ion-label color="primary">Round - {{roundNumber}}</ion-label>
       </ion-list-header>
-      <ion-item>
-        <ion-label position="floating">
-          Winner
-        </ion-label>
-        <ion-select placeholder="Select Winner" formControlName="winnerDetail">
-          <ion-select-option [value]="data" *ngFor="let data of playerDetails">
-            {{data.name}}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Score</ion-label>
-        <ion-input type="number" formControlName="winnerScore"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-button expand="block" (click)="finishRound()">Finish Round</ion-button>
-      </ion-item>
+      <ng-container *ngIf="isUno">
+        <ion-item>
+          <ion-label position="floating">
+            Winner
+          </ion-label>
+          <ion-select placeholder="Select Winner" formControlName="winnerDetail">
+            <ion-select-option [value]="data" *ngFor="let data of playerDetails">
+              {{data.name}}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Score</ion-label>
+          <ion-input type="number" formControlName="winnerScore"></ion-input>
+        </ion-item>
+      </ng-container>
+      <ng-container *ngIf="!isUno">
+        <ion-item *ngFor="let data of playerDetails">
+          <ion-label position="floating">{{data.name}} Score</ion-label>
+          <ion-input type="number" [formControlName]="data.scoreCtrlName"></ion-input>
+        </ion-item>
+      </ng-container>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button expand="block" (click)="finishRound()">Finish Round</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-list>
   </form>
 </ion-content>
