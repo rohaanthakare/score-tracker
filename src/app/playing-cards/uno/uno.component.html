@@ -41,6 +41,13 @@
           </ion-col>
         </ion-row>
       </ion-grid>
+      <ion-grid *ngIf="recentRounds.length > 0">
+        <ion-row>
+          <ion-col>
+            <ion-button expand="block" (click)="undoRound()">Undo</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
       <ion-grid *ngIf="gameCompleted || !isUno">
         <ion-row>
           <ion-col>

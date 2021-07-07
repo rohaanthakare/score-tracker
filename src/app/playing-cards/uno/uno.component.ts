@@ -27,6 +27,7 @@ export class UnoComponent implements OnInit {
   gameForm: FormGroup = this.formBuilder.group({
     numberOfPlayers: this.numberOfPlayersCtrl
   });
+  recentRounds = [];
   winnerName = '';
   isUno = false; 
   playerDetails = [];
@@ -86,6 +87,7 @@ export class UnoComponent implements OnInit {
         this.playerDetails.forEach((p) => {
             if (data.data && data.data.winnerDetail != null) {
               if (p.id === data.data.winnerDetail.id) {
+                this.recentRounds.push(data.data);
                 p.score = p.score + data.data.winnerScore;
                 if (p.score >= 500) {
                   this.gameCompleted = true;
@@ -99,6 +101,7 @@ export class UnoComponent implements OnInit {
         this.roundNumber++;
       } else {
         if (data.data) {
+          this.recentRounds.push(data.data);
           data.data.forEach((d) => {
             const playerDetail = this.playerDetails.find((p) => p.id == d.id);
             playerDetail.score = playerDetail.score + d.playerScore; 
@@ -114,6 +117,24 @@ export class UnoComponent implements OnInit {
     });
 
     await roundModal.present();
+  }
+
+  undoRound() {
+    const roundDetails = this.recentRounds.pop();
+    if (this.isUno) {
+      this.playerDetails.forEach((p) => {
+          if (p.id === roundDetails.winnerDetail.id) {
+            p.score = p.score - roundDetails.winnerScore;
+          }
+      });
+      this.roundNumber--;
+    } else {
+      roundDetails.forEach((d) => {
+        const playerDetail = this.playerDetails.find((p) => p.id == d.id);
+        playerDetail.score = playerDetail.score - d.playerScore; 
+      });
+      this.roundNumber--;
+    }
   }
 
   async isGameCompleted() {
