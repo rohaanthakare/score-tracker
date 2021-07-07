@@ -13,4 +13,12 @@ export class HomePage {
   openSettings() {
     this.menuCtrl.open('settings');
   }
+
+  logout() {
+    console.log('----logout----');
+  }
+
+  openProfile() {
+    console.log('----openProfile----');
+  }
 }

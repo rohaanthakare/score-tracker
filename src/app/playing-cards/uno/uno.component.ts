@@ -31,6 +31,7 @@ export class UnoComponent implements OnInit {
   winnerName = '';
   isUno = false; 
   playerDetails = [];
+  gameTitle: string;
   constructor(private formBuilder: FormBuilder, private modalCtrl: ModalController, private alertCtrl: AlertController,
     private helperService: HelperService, private router: Router, private route: ActivatedRoute) { }
 
@@ -38,6 +39,17 @@ export class UnoComponent implements OnInit {
     this.route.paramMap.subscribe(
       params => {
         this.gameCode = params.get('code');
+        switch(this.gameCode) {
+          case CardGames.UNO:
+            this.gameTitle = 'UNO';
+            break;
+          case CardGames.HIGH_SCORE_WINNER:
+            this.gameTitle = 'High Score Winner';
+            break;
+          case CardGames.LOW_SCORE_WINNER:
+            this.gameTitle = 'Low Score Winner';
+            break;
+        }
         this.isUno = this.gameCode === CardGames.UNO ? true : false;
       }
     );
